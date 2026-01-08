@@ -31,6 +31,8 @@ class Settings:
 
     SECRET_KEY = os.getenv("SECRET_KEY")
 
+    CAESAR_SHIFT = int(os.getenv("CAESAR_SHIFT", "3"))
+
     def __init__(self):
         mandatory_vars = [
             "POSTGRES_DB_URL",

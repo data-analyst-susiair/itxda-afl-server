@@ -56,6 +56,8 @@ The application will fail to start if any of these variables are missing.
 | `IS_TESTING` | Enable testing mode. | `true` |
 | `IS_DEBUGGING` | Enable debugging mode. | `False` |
 | `DATA_ANALYST_USER_ID` | User ID for data analyst operations. | `41` |
+| `SECRET_KEY` | Secret key for API authentication (X-Key header). | `None` |
+| `CAESAR_SHIFT` | Shift value for the Caesar cipher used in authentication. | `3` |
 
 ## Running the Application
 
@@ -85,13 +87,17 @@ The server will start at `http://0.0.0.0:8000`.
 
 ## API Endpoints
 
-### `POST /afl`
+### `GET /afl`
 
 Triggers the execution of the logbook pipelines.
+
+**Authentication:**
+Requires an `X-Key` header containing the `SECRET_KEY` encrypted with a Caesar cipher using the configured `CAESAR_SHIFT` (default 3).
 
 -   **Response:**
     -   `200 OK`: Pipeline execution completed successfully.
     -   `500 Internal Server Error`: Pipeline execution failed.
+    -   `401 Unauthorized`: Invalid Secret Key.
 
 ### `GET /health`
 

@@ -13,9 +13,25 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+def caesar_cipher(text: str, shift: int) -> str:
+    result = ""
+    for char in text:
+        if char.isalpha():
+            start = ord("A") if char.isupper() else ord("a")
+            result += chr((ord(char) - start + shift) % 26 + start)
+        else:
+            result += char
+    return result
+
+
 @app.get("/afl")
 def execute_pipeline(x_secret_key: str = Header(..., alias="X-Key")):
-    if x_secret_key != settings.SECRET_KEY:
+    expected_key = (
+        caesar_cipher(settings.SECRET_KEY, settings.CAESAR_SHIFT)
+        if settings.SECRET_KEY
+        else None
+    )
+    if expected_key is None or x_secret_key != expected_key:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid Secret Key",
