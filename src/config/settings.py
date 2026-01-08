@@ -29,6 +29,8 @@ class Settings:
     IS_DEBUGGING = os.getenv("IS_DEBUGGING", "False").lower() == "true"
     DATA_ANALYST_USER_ID = int(os.getenv("DATA_ANALYST_USER_ID", "41"))
 
+    SECRET_KEY = os.getenv("SECRET_KEY")
+
     def __init__(self):
         mandatory_vars = [
             "POSTGRES_DB_URL",

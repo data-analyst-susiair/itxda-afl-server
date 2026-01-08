@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header, status
 from sqlalchemy import text
 from src.pipelines.logbook_sheet import run_logbook_sheet_pipeline
 from src.pipelines.logbook_entry import run_logbook_entry_pipeline
@@ -13,8 +13,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@app.post("/afl")
-def execute_pipeline():
+@app.get("/afl")
+def execute_pipeline(x_secret_key: str = Header(..., alias="X-Key")):
+    if x_secret_key != settings.SECRET_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Secret Key",
+        )
     try:
         logger.info("Starting pipeline execution...")
         run_logbook_sheet_pipeline()
